@@ -1,0 +1,134 @@
+/*drop table WORKER
+drop table depart
+drop table project
+drop table job
+/*职工表*/
+CREATE TABLE WORKER(
+Wname CHAR(20) not null,
+Wno CHAR(15) primary key not null,
+Wage INT not null,
+Wsalary INT not null,
+Wdepart CHAR(20)
+);
+insert into worker values('职员1','11111',20,20000,'001')
+insert into worker values('职员2','22222',22,30000,'002')
+insert into worker values('职员3','33333',23,400000,'003')
+insert into worker values('职员4','44444',60,10000,'004')
+
+/*部门表*/
+create table depart
+(
+dname char(40) not null,
+dno char(20) primary key not null,
+dmanage char(15)
+);
+insert into depart values('部门1','001','11111')
+insert into depart values('部门2','002','22222')
+insert into depart values('部门3','003','33333')
+insert into depart values('部门4','004','44444')
+
+/*项目表*/
+create table project
+(
+pname char(40) not null,
+pno char(20) primary key not null,
+pdepart char(20)
+);
+insert into project values('项目1','1511','001')
+insert into project values('项目2','1512','002')
+insert into project values('项目3','1513','003')
+insert into project values('项目4','1514','004')
+
+/*工作表*/
+/*create trigger tcpaul
+before insert or update 
+of jtime 
+on job
+reference old as oj new as nj
+for each row
+when(:oj.jtime>24)
+BEGIN
+	:nj.jtime=24;
+end;*/*/
+/*create table job
+(
+jno char(15) not null,
+jno1 char(20) not null,
+jtime int not null,
+primary key(jno,jno1)
+);
+insert into job values('11111','1511',10)
+insert into job values('22222','1512',15)
+insert into job values('33333','1513',100)
+insert into job values('44444','1514',25)
+
+
+/*设置键约束*/
+alter table WORKER
+add  foreign key(Wdepart) references depart(dno) 
+
+alter table depart
+add foreign key(dmanage) references WORKER(Wno)
+
+alter table project
+add foreign key(pdepart) references depart(dno) /*ON UPDATE CASCADE*/
+
+alter table job
+add foreign key(jno) references WORKER(Wno) ON UPDATE CASCADE
+alter table job
+add foreign key(jno1) references project(pno) ON UPDATE CASCADE*/
+
+/*update WORKER set Wdepart='002' where Wno='11111'*/
+/*drop table WORKER*/
+/*delete from project where pdepart='001'*/
+/*update depart set dname=NULL where dno='001'*/
+/*update WORKER set Wno='11112' where Wname='职员1'*/
+
+/*create trigger settime after insert,insert on job
+reference old as oj new as nj
+for each statement
+when()
+BEGIN
+	IF:oj.jtime>24 then :nj.jtime=24;
+	end if;
+end;*/
+/*insert into job values('55555','1514',25)*/
+/*drop trigger insert_job*/
+/*create trigger insert_job
+on job
+instead of insert
+as 
+	declare @jno char(15), @jno1 char(20),@jtime int;
+	select @jno=jno,@jno1=jno1,@jtime=jtime from inserted;
+	if(@jtime>24)
+		set @jtime=24;
+	insert into job values(@jno,@jno1,@jtime);
+go
+insert into job values('44444','1512',26) */
+/*drop trigger modify_worker*/
+/*create trigger modify_worker
+on job
+instead of insert
+as 
+	declare @jno char(15), @jno1 char(20),@jtime int;
+	select @jno=jno,@jno1=jno1,@jtime=jtime from inserted;
+	if(@jtime>24)
+		set @jtime=24;
+	insert into job values(@jno,@jno1,@jtime);
+	update WORKER set Wsalary=Wsalary*1.02 from WORKER where WORKER.Wno=@jno;
+	if exists (select * from depart where depart.dmanage=@jno)
+		update WORKER set Wsalary=Wsalary*1.02 from WORKER where WORKER.Wno=@jno;*/
+		
+		
+/*insert into worker values('职员5','55555',20,20000,'005')	*/
+/*create user dba for login dba with default_schema=dbo
+exec sp_addrolemember 'worker1'
+grant select,update on WORKER to worker1*/
+--EXEC sp_revokedbaccess 'worker1'
+--create login worker1 with password='111',default_database=master
+--create user worker1 for login worker1 with default_schema=dbo
+--grant select on WORKER to worker1
+--grant update on WORKER(Wage) to worker1
+--select * from WORKER
+--update WORKER set Wage=67 where Wno='11111'
+update WORKER set Wsalary=7000 where Wno='11111'	
